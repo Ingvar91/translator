@@ -1,0 +1,67 @@
+@import '../../styles/bootstrap';
+
+:host {
+  &.app-btn {
+    display: inline-flex;
+    align-items: center;
+    color: $body-color;
+    text-align: center;
+    text-decoration: none;
+    cursor: pointer;
+    user-select: none;
+    background-color: transparent;
+    z-index: 1;
+    border: $btn-border-width solid transparent;
+    @include button-size($btn-padding-y, $btn-padding-x, $font-size-base, $btn-line-height, $btn-border-radius);
+    @include transition($btn-transition);
+
+    app-icon {
+      margin-right: 0.5rem;
+      animation: spin 1s linear infinite;
+    }
+
+    &:hover {
+      color: $body-color;
+      text-decoration: none;
+    }
+
+    .app-btn-check:focus + &,
+    &:focus {
+      outline: 0;
+      box-shadow: $btn-focus-box-shadow;
+    }
+
+    .app-btn-check:checked + &,
+    .app-btn-check:active + &,
+    &:active,
+    &--active {
+      @include box-shadow($btn-active-box-shadow);
+
+      &:focus {
+        @include box-shadow($btn-focus-box-shadow, $btn-active-box-shadow);
+      }
+    }
+
+    &:disabled,
+    &--disabled,
+    fieldset:disabled & {
+      pointer-events: none;
+      opacity: $btn-disabled-opacity;
+      @include box-shadow(none);
+    }
+
+    @each $color, $value in $theme-colors {
+      &__#{$color} {
+        @include button-variant($value, $value);
+      }
+    }
+
+    @each $color, $value in $theme-colors {
+      &__outline-#{$color} {
+        @include button-outline-variant($value);
+      }
+    }
+  }
+}
+
+@keyframes spin { 100% { transform:rotate(360deg); } }

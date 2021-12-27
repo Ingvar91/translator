@@ -1,0 +1,70 @@
+<div class="translator-container">
+  <div class="translator">
+    <div class="translator__textarea">
+      <form [formGroup]="formGroup">
+        <app-input-text
+          [height]="15"
+          [maxLength]="maxLengthInputText"
+          [control]="formGroup.get('text')?.value"
+          formControlName="text"
+          placeholder="Текст который хотите перевести"
+        ></app-input-text>
+        <div class="translator__danger-text" *ngIf="formGroup.controls['text'].invalid && formGroup.controls['text'].touched">
+          Поле не должно быть пустым
+        </div>
+      </form>
+      <div class="translator__textarea-control">
+        <div>
+          <button appButton outline="secondary" (click)="onPaste()">Вставить из буфера</button>
+        </div>
+        <div>
+          <button appButton outline="danger" (click)="onClear()">Очистить</button>
+          <button
+            appButton
+            (click)="onTranslate()"
+            [isLoading]="isLoading$ | async">
+            Перевести
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <div class="translator__output">
+      <div
+        class="translator__output-control"
+        appDropdown
+        [dropdown]="languagesDropdown"
+        [(visible)]="visibleDropdown">
+          <div class="translator__output-name">
+            <div>Текущий язык: {{currentCountry.name}}</div>
+            <app-icon [icon]="currentCountry.icon" [fontSize]="1.1"></app-icon>
+          </div>
+          <app-icon [class.translator__output-chevron--rotate]="visibleDropdown" [icon]="iconChevronDown" [fontSize]="1.1"></app-icon>
+      </div>
+      <div class="translator__output-content" *ngIf="translateText$ | async as translateText">
+        <div class="translator__output-text">
+          {{translateText}}
+        </div>
+        <div>
+          <app-copy-text
+            appTooltip
+            [tooltipTitle]="tooltipTitle"
+            (tooltipVisibleChange)="tooltipTitle = 'Копировать'"
+            (copyChange)="tooltipTitle = 'Перевод скопирован'"
+            [text]="translateText!"></app-copy-text>
+        </div>
+      </div>
+    </div>
+
+    <app-dropdown #languagesDropdown>
+      <ul class="dropdown translator-dropdown">
+        <li *ngFor="let country of countries" (click)="selectCountry(country)" class="dropdown__item translator-dropdown__item">
+          <span class="translator-dropdown__name">{{country.name}}</span>
+          <app-icon [icon]="country.icon" [fontSize]="1.2"></app-icon>
+        </li>
+      </ul>
+    </app-dropdown>
+  </div>
+</div>
+
+

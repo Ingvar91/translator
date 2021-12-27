@@ -1,0 +1,11 @@
+@import '../../styles/bootstrap';
+
+:host {
+  display: inline-block;
+  margin-left: 8px;
+  cursor: pointer;
+}
+
+app-icon {
+  color: $primary;
+}

@@ -1,0 +1,39 @@
+@import '../../styles/bootstrap';
+
+$tooltip-font-size:           $font-size-sm !default;
+$tooltip-max-width:           200px !default;
+$tooltip-color:               $white !default;
+$tooltip-bg:                  $black !default;
+$tooltip-border-radius:        $border-radius !default;
+$tooltip-padding-y:           .25rem !default;
+$tooltip-padding-x:           .5rem !default;
+$tooltip-margin:              .3rem !default;
+$tooltip-arrow-width:         .8rem !default;
+$tooltip-arrow-height:        .4rem !default;
+
+.app-tooltip {
+  display: block;
+  margin: $tooltip-margin 0;
+  font-size: $tooltip-font-size;
+  word-wrap: break-word;
+  position: relative;
+  color: $tooltip-color;
+  text-align: center;
+  background-color: $tooltip-bg;
+  max-width: $tooltip-max-width;
+  padding: $tooltip-padding-y $tooltip-padding-x;
+  @include border-radius($tooltip-border-radius);
+  .arrow {
+    position: absolute;
+    display: block;
+    width: $tooltip-arrow-width;
+    height: $tooltip-arrow-height;
+
+    &::before {
+      position: absolute;
+      content: "";
+      border-color: transparent;
+      border-style: solid;
+    }
+  }
+}

@@ -1,0 +1,91 @@
+@import '../../styles/bootstrap';
+
+$textarea-width:       100% !default;
+$textarea-height:      14rem !default;
+
+.translator {
+  display: inline-flex;
+  margin-top: 2rem;
+  box-shadow: $box-shadow;
+  background-color: $white;
+  &-container {
+    display: flex;
+    justify-content: center;
+  }
+  &__danger-text {
+    position: absolute;
+    color: $danger;
+    font-size: $font-size-sm;
+    margin-left: .5rem;
+  }
+  &__textarea {
+    width: 34rem;
+    textarea {
+      @include border-right-radius(0);
+      min-width: $textarea-width;
+      max-width: $textarea-width;
+      min-height: $textarea-height;
+      max-height: $textarea-height;
+    }
+    &-control {
+      display: flex;
+      justify-content: space-between;
+      padding: 1.4rem 0 1.2rem 1rem;
+      button {
+        &:nth-child(2) {
+          margin-left: 0.5rem;
+        }
+      }
+      > * {
+        display: flex;
+      }
+    }
+  }
+
+  &__output {
+    width: 34rem;
+    overflow: hidden;
+    @include border-right-radius($border-radius);
+    &-control {
+      cursor: pointer;
+      display: flex;
+      justify-content: space-between;
+      padding: 1rem;
+      background: $gray-200;
+      app-icon {
+        margin-left: .4rem;
+      }
+      &:hover {
+        background-color: $gray-300;
+        transition: background-color .2s;
+      }
+    }
+    &-name {
+      display: flex;
+    }
+    &-chevron {
+      display: flex;
+      &--rotate {
+        transform: rotate(180deg);
+      }
+    }
+    &-content {
+      padding: 1rem;
+      display: flex;
+    }
+    &-text {
+      flex: 1;
+      line-height: 1.4rem;
+    }
+  }
+
+  &-dropdown {
+    &__item {
+      display: flex;
+    }
+    &__name {
+      flex: 1;
+    }
+  }
+
+}
