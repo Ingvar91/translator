@@ -1,5 +1,16 @@
-import { ChangeDetectionStrategy, Component, ElementRef, Input, Optional, Self, ViewChild } from '@angular/core';
+import {
+  ChangeDetectionStrategy,
+  Component,
+  ElementRef,
+  Input,
+  OnDestroy,
+  OnInit,
+  Optional,
+  Self,
+  ViewChild,
+} from '@angular/core';
 import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
+import { Subject, takeUntil } from 'rxjs';
 
 @Component({
   selector: 'app-input-text',
@@ -7,18 +18,16 @@ import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
   styleUrls: ['./input-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
-export class InputTextComponent implements ControlValueAccessor {
+export class InputTextComponent implements ControlValueAccessor, OnInit, OnDestroy {
   @Input() height: number;
 
   @Input() placeholder: string;
 
-  @Input() maxLength = 600;
+  @Input() maxLength = 300;
 
   @ViewChild('input') input: ElementRef;
 
-  onChange!: (value: number | null) => void;
-
-  onTouched!: (value: number | null) => void;
+  destroy$ = new Subject<void>();
 
   constructor(@Optional() @Self() public ngControl: NgControl) {
     if (this.ngControl != null) {
@@ -26,17 +35,24 @@ export class InputTextComponent implements ControlValueAccessor {
     }
   }
 
+  ngOnInit() {
+    this.ngControl?.valueChanges?.pipe(takeUntil(this.destroy$)).subscribe((text) => {
+      this.ngControl.control?.setValue(text?.substring(0, this.maxLength) || '', { emitEvent: false });
+    });
+  }
+
+  ngOnDestroy() {
+    this.destroy$.next();
+    this.destroy$.complete();
+  }
+
   get control(): FormControl {
     return this.ngControl.control as FormControl;
   }
 
-  registerOnChange(fn: () => void): void {
-    this.onChange = fn;
-  }
+  registerOnChange(): void {}
 
-  registerOnTouched(fn: () => void): void {
-    this.onTouched = fn;
-  }
+  registerOnTouched(): void {}
 
   writeValue(): void {}
 }

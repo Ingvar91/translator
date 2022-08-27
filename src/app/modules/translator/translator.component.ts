@@ -29,7 +29,7 @@ export class TranslatorComponent implements OnInit, OnDestroy {
 
   tooltipTitle: string = 'Копировать'; // текст для tooltip-а кнопки копировать
 
-  maxLengthInputText = 320; // максимальное количество символов в текстовом поле
+  maxLengthInputText = 300; // максимальное количество символов в текстовом поле
 
   formGroup: FormGroup;
 
