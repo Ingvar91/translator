@@ -2,11 +2,10 @@
   <textarea
     #input
     class="app-input-text"
-    [(ngModel)]="control"
+    [formControl]="control"
     [style.height.rem]="height"
-    [placeholder]="placeholder"
-    (input)="onControlChange($event)">
+    [placeholder]="placeholder">
   </textarea>
-  <div class="app-input-text__max-length">{{control?.length || 0}}/{{maxLength}}</div>
+  <div class="app-input-text__max-length">{{control.value?.length || 0}}/{{maxLength}}</div>
 </div>
 

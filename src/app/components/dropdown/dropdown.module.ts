@@ -1,8 +1,8 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { DropdownComponent } from './dropdown.component';
-import {OverlayModule} from "@angular/cdk/overlay";
-import {DropDownDirective} from "./dropdown.directive";
+import { DropDownDirective } from './dropdown.directive';
 
 @NgModule({
   declarations: [
@@ -15,7 +15,7 @@ import {DropDownDirective} from "./dropdown.directive";
   ],
   imports: [
     CommonModule,
-    OverlayModule
-  ]
+    OverlayModule,
+  ],
 })
 export class DropdownModule { }

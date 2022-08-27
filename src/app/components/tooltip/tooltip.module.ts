@@ -1,21 +1,21 @@
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { TooltipComponent } from './tooltip.component';
-import {OverlayModule} from "@angular/cdk/overlay";
-import {TooltipDirective} from "./tooltip.directive";
+import { TooltipDirective } from './tooltip.directive';
 
 @NgModule({
   declarations: [
     TooltipComponent,
-    TooltipDirective
+    TooltipDirective,
   ],
   exports: [
     TooltipComponent,
-    TooltipDirective
+    TooltipDirective,
   ],
   imports: [
     CommonModule,
-    OverlayModule
-  ]
+    OverlayModule,
+  ],
 })
 export class TooltipModule { }

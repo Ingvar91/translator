@@ -1,14 +1,15 @@
-import {Component, EventEmitter, Input, Output} from '@angular/core';
-import {IconCopy} from "../icons/icons/iconCopy";
+import { ChangeDetectionStrategy, Component, EventEmitter, Input, Output } from '@angular/core';
+import { IconCopy } from '../icons/icons/iconCopy';
 
 @Component({
   selector: 'app-copy-text',
   templateUrl: './copy-text.component.html',
-  styleUrls: ['./copy-text.component.scss']
+  styleUrls: ['./copy-text.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class CopyTextComponent {
-
   @Input() text: string;
+
   @Output() copyChange = new EventEmitter<void>();
 
   iconCopy = IconCopy;

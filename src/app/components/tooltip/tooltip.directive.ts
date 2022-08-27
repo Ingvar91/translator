@@ -5,39 +5,50 @@ import {
   ElementRef,
   EventEmitter,
   Input,
+  OnDestroy,
   Output,
   Renderer2,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
-import {TooltipComponent} from "./tooltip.component";
-import {FlexibleConnectedPositionStrategy, Overlay, OverlayRef} from "@angular/cdk/overlay";
-import {BehaviorSubject, EMPTY, fromEvent, merge, Subject, Subscription, switchMap, takeUntil} from "rxjs";
-import {auditTime, distinctUntilChanged, filter, mapTo} from "rxjs/operators";
-import {TemplatePortal} from "@angular/cdk/portal";
-import {ESCAPE} from "@angular/cdk/keycodes";
-import {POSITION_MAP} from "../core/overlay/overlay-position";
+import { FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { BehaviorSubject, EMPTY, fromEvent, merge, Subject, Subscription, switchMap, takeUntil } from 'rxjs';
+import { auditTime, distinctUntilChanged, filter, mapTo } from 'rxjs/operators';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { ESCAPE } from '@angular/cdk/keycodes';
+import { TooltipComponent } from './tooltip.component';
+import { POSITION_MAP } from '../core/overlay/overlay-position';
 
 export type PlacementTooltipType = 'topCenter' | 'bottomCenter';
 
 @Directive({
   selector: '[appTooltip]',
   providers: [
-    Overlay
+    Overlay,
   ],
 })
-export class TooltipDirective implements AfterViewInit {
-
+export class TooltipDirective implements AfterViewInit, OnDestroy {
   @Input() trigger: 'click' | 'hover' = 'hover';
+
   @Input() minWidth: number = 50;
+
   @Input() placement: PlacementTooltipType = 'topCenter'; // позиционирование tooltip
+
   @Output() tooltipVisibleChange: EventEmitter<boolean> = new EventEmitter();
+
   _tooltipTitle: string;
+
   private componentRef: ComponentRef<TooltipComponent>;
+
   private trigger$ = new BehaviorSubject<'click' | 'hover'>(this.trigger);
+
   protected destroy$ = new Subject();
+
   protected portal: TemplatePortal;
+
   protected overlayRef: OverlayRef | null;
+
   private overlayClose$ = new Subject<boolean>();
+
   private overlay$: Subscription;
 
   private listOfPositions = [
@@ -68,33 +79,32 @@ export class TooltipDirective implements AfterViewInit {
     // создаем компонент
     this.componentRef = this.viewContainerRef.createComponent(TooltipComponent);
 
-    const nativeElement: HTMLElement = this.el.nativeElement;
+    const { nativeElement } = this.el;
     const hostMouseState$ = merge(
       fromEvent(nativeElement, 'mouseenter').pipe(mapTo(true)),
-      fromEvent(nativeElement, 'mouseleave').pipe(mapTo(false))
+      fromEvent(nativeElement, 'mouseleave').pipe(mapTo(false)),
     );
     const hostClickState$ = fromEvent(nativeElement, 'click').pipe(mapTo(true));
 
     const visibleStateByTrigger$ = this.trigger$.pipe(
-      switchMap(trigger => {
+      switchMap(() => {
         if (this.trigger === 'hover') {
           return hostMouseState$;
-        } else if (this.trigger === 'click') {
+        } if (this.trigger === 'click') {
           return hostClickState$;
-        }  else {
-          return EMPTY;
         }
-      })
+        return EMPTY;
+      }),
     );
 
     merge(hostClickState$, visibleStateByTrigger$, this.overlayClose$).pipe(
       auditTime(150),
       distinctUntilChanged(),
-      takeUntil(this.destroy$)
+      takeUntil(this.destroy$),
     ).subscribe((visible: boolean) => {
       this.tooltipVisibleChange.emit(visible);
       if (visible) {
-      const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
+        const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
           .position()
           .flexibleConnectedTo(this.el.nativeElement)
           .withLockedPosition();
@@ -105,7 +115,7 @@ export class TooltipDirective implements AfterViewInit {
         }
         if (!this.overlayRef) {
           this.overlayRef = this.overlay.create({
-            positionStrategy: positionStrategy,
+            positionStrategy,
             disposeOnNavigation: true,
             minWidth: this.minWidth,
             scrollStrategy: this.overlay.scrollStrategies.close(),
@@ -114,7 +124,7 @@ export class TooltipDirective implements AfterViewInit {
             this.overlayRef.backdropClick(),
             this.overlayRef.detachments(),
             this.overlayRef.outsidePointerEvents(),
-            this.overlayRef.keydownEvents().pipe(filter(e => e.keyCode === ESCAPE))
+            this.overlayRef.keydownEvents().pipe(filter((e) => e.keyCode === ESCAPE)),
           )
             .pipe(mapTo(false), takeUntil(this.destroy$))
             .subscribe(this.overlayClose$);
@@ -122,17 +132,19 @@ export class TooltipDirective implements AfterViewInit {
         positionStrategy.withPositions([POSITION_MAP[this.placement], ...this.listOfPositions]);
         positionStrategy.withPush(true);
         this.overlayRef.attach(this.portal);
-      } else {
-        if (this.overlayRef) {
-          this.overlayRef.detach();
-          this.overlayRef = null;
-          this.overlay$.unsubscribe();
-        }
+      } else if (this.overlayRef) {
+        this.overlayRef.detach();
+        this.overlayRef = null;
+        this.overlay$.unsubscribe();
       }
     });
   }
 
   ngOnDestroy() {
-    this.overlay$.unsubscribe();
+    if (this.overlayRef) {
+      this.overlayRef.detach();
+      this.overlayRef = null;
+      this.overlay$.unsubscribe();
+    }
   }
 }

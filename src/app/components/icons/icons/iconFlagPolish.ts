@@ -1,8 +1,5 @@
-import {IconDefinition} from '../icons.type';
-
-export const IconFlagPolish: IconDefinition = {
-  name: 'flagPolish',
-  height: 47,
-  width: 71,
-  svgFileName: 'polish.svg'
-};
+export const IconFlagPolish = `<svg xmlns="http://www.w3.org/2000/svg" width="640" height="400" viewBox="0 0 8 5">
+<rect width="8" height="5" fill="#dc143c"/>
+<rect width="8" height="2.5" fill="#fff"/>
+</svg>
+`;

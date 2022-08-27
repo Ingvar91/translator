@@ -5,13 +5,9 @@
         <app-input-text
           [height]="15"
           [maxLength]="maxLengthInputText"
-          [control]="formGroup.get('text')?.value"
           formControlName="text"
           placeholder="Текст который хотите перевести"
         ></app-input-text>
-        <div class="translator__danger-text" *ngIf="formGroup.controls['text'].invalid && formGroup.controls['text'].touched">
-          Поле не должно быть пустым
-        </div>
       </form>
       <div class="translator__textarea-control">
         <div>
@@ -36,8 +32,8 @@
         [dropdown]="languagesDropdown"
         [(visible)]="visibleDropdown">
           <div class="translator__output-name">
-            <div>Текущий язык: {{currentCountry.name}}</div>
-            <app-icon [icon]="currentCountry.icon" [fontSize]="1.1"></app-icon>
+            <div>Текущий язык: {{currentCountry?.name}}</div>
+            <app-icon [icon]="currentCountry?.icon" [fontSize]="1.1"></app-icon>
           </div>
           <app-icon [class.translator__output-chevron--rotate]="visibleDropdown" [icon]="iconChevronDown" [fontSize]="1.1"></app-icon>
       </div>

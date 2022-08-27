@@ -1,41 +1,42 @@
-import {ChangeDetectionStrategy, Component, ElementRef, forwardRef, Input, ViewChild} from '@angular/core';
-import {InputValidation} from "../input-validation";
-import {NG_VALIDATORS, NG_VALUE_ACCESSOR} from "@angular/forms";
+import { ChangeDetectionStrategy, Component, ElementRef, Input, Optional, Self, ViewChild } from '@angular/core';
+import { ControlValueAccessor, FormControl, NgControl } from '@angular/forms';
 
 @Component({
   selector: 'app-input-text',
   templateUrl: './input-text.component.html',
   styleUrls: ['./input-text.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
-  providers: [
-    {
-      provide: NG_VALUE_ACCESSOR,
-      useExisting: forwardRef(() => InputTextComponent),
-      multi: true,
-    },
-    {
-      provide: NG_VALIDATORS,
-      useExisting: forwardRef(() => InputTextComponent),
-      multi: true,
-    }
-  ]
 })
-export class InputTextComponent extends InputValidation {
-  private _control: string;
+export class InputTextComponent implements ControlValueAccessor {
   @Input() height: number;
+
   @Input() placeholder: string;
+
   @Input() maxLength = 600;
 
-  @ViewChild('input', { static: true }) input: ElementRef;
+  @ViewChild('input') input: ElementRef;
 
-  get control(): string {
-    return this._control;
+  onChange!: (value: number | null) => void;
+
+  onTouched!: (value: number | null) => void;
+
+  constructor(@Optional() @Self() public ngControl: NgControl) {
+    if (this.ngControl != null) {
+      this.ngControl.valueAccessor = this;
+    }
   }
 
-  @Input()
-  set control(text: string) {
-    text = text?.substring(0, this.maxLength) || '';
-    this._control = text;
-    this.input.nativeElement.value = text;
+  get control(): FormControl {
+    return this.ngControl.control as FormControl;
   }
+
+  registerOnChange(fn: () => void): void {
+    this.onChange = fn;
+  }
+
+  registerOnTouched(fn: () => void): void {
+    this.onTouched = fn;
+  }
+
+  writeValue(): void {}
 }

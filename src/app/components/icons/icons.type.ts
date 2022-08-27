@@ -1,6 +1,6 @@
 export enum IconDefinitionFillRule {
   evenodd = 'evenodd',
-  nonzero = 'nonzero'
+  nonzero = 'nonzero',
 }
 
 export interface IconDefinition {

@@ -1,9 +1,3 @@
-import {IconDefinition, IconDefinitionFillRule} from '../icons.type';
-
-export const IconChevronDown: IconDefinition = {
-  name: 'chevronDown',
-  height: 16,
-  width: 16,
-  fillRule: IconDefinitionFillRule.evenodd,
-  svgData: 'M1.646 4.646a.5.5 0 01.708 0L8 10.293l5.646-5.647a.5.5 0 01.708.708l-6 6a.5.5 0 01-.708 0l-6-6a.5.5 0 010-.708z'
-};
+export const IconChevronDown = `<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" version="1.1" id="Layer_1" x="0px" y="0px" viewBox="0 0 407.437 407.437" style="enable-background:new 0 0 407.437 407.437;" xml:space="preserve">
+<polygon points="386.258,91.567 203.718,273.512 21.179,91.567 0,112.815 203.718,315.87 407.437,112.815 "/>
+</svg>`;

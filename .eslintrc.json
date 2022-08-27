@@ -1,0 +1,62 @@
+{
+  "root": true,
+  "ignorePatterns": [
+    "projects/**/*",
+    "src/app/components/icons/icons/*"
+  ],
+  "overrides": [
+    {
+      "files": [
+        "*.ts"
+      ],
+      "parserOptions": {
+        "project": [
+          "tsconfig.json"
+        ],
+        "createDefaultProgram": true
+      },
+      "extends": [
+        "airbnb-base",
+        "airbnb-typescript/base",
+        "plugin:@angular-eslint/recommended",
+        "plugin:@angular-eslint/template/process-inline-templates"
+      ],
+      "rules": {
+        "max-len": ["error", { "code": 120 }],
+        "no-console": ["error", { "allow": ["error"] }],
+        "no-return-assign": "off",
+        "no-alert": "error",
+        "no-param-reassign": "off",
+        "no-unused-vars": "error",
+        "no-underscore-dangle": "off",
+        "no-useless-escape": "off",
+        "no-plusplus": ["error", { "allowForLoopAfterthoughts": true }],
+        "linebreak-style": "off",
+        "class-methods-use-this": "off",
+        "quotes": [2, "single", { "avoidEscape": true, "allowTemplateLiterals": true }],
+        "import/prefer-default-export": "off",
+        "import/no-extraneous-dependencies": ["error", { "devDependencies": true }],
+        "@typescript-eslint/no-explicit-any": "error",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/comma-dangle": "off",
+        "object-curly-newline": [
+          "error",
+          {
+            "ObjectExpression": { "consistent": true, "multiline": true },
+            "ObjectPattern": { "consistent": true, "multiline": true },
+            "ExportDeclaration": { "multiline": true, "minProperties": 3 }
+          }
+        ]
+      }
+    },
+    {
+      "files": [
+        "*.html"
+      ],
+      "extends": [
+        "plugin:@angular-eslint/template/recommended"
+      ],
+      "rules": {}
+    }
+  ]
+}

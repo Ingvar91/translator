@@ -1,7 +1,7 @@
-import {ChangeDetectionStrategy, Component, TemplateRef, ViewChild, ViewEncapsulation} from '@angular/core';
-import {slideMotion} from "../core/animation/slide";
+import { ChangeDetectionStrategy, Component, TemplateRef, ViewChild, ViewEncapsulation } from '@angular/core';
+import { slideMotion } from '../core/animation/slide';
 
-export type DropdownPlacementType = 'top' | 'bottom';
+export type DropdownPlacementType = 'top' | 'center' | 'bottom';
 
 @Component({
   selector: 'app-dropdown',
@@ -9,10 +9,10 @@ export type DropdownPlacementType = 'top' | 'bottom';
   styleUrls: ['./dropdown.component.scss'],
   changeDetection: ChangeDetectionStrategy.OnPush,
   encapsulation: ViewEncapsulation.None,
-  animations: [slideMotion]
+  animations: [slideMotion],
 })
 export class DropdownComponent {
+  dropDownPosition: DropdownPlacementType = 'bottom';
 
-  dropDownPosition: 'top' | 'center' | 'bottom' = 'bottom';
-  @ViewChild(TemplateRef, {static: true, read: TemplateRef}) templateRef: TemplateRef<DropdownComponent>;
+  @ViewChild(TemplateRef) templateRef: TemplateRef<DropdownComponent>;
 }

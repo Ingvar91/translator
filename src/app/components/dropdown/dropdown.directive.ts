@@ -9,47 +9,51 @@ import {
   Output,
   Renderer2,
   SimpleChanges,
-  ViewContainerRef
+  ViewContainerRef,
 } from '@angular/core';
-import {DropdownComponent} from './dropdown.component';
-import {FlexibleConnectedPositionStrategy, Overlay, OverlayRef} from '@angular/cdk/overlay';
-import {auditTime, distinctUntilChanged, filter, first, map, mapTo, switchMap, takeUntil} from 'rxjs/operators';
-import {BehaviorSubject} from 'rxjs/internal/BehaviorSubject';
-import {of} from 'rxjs/internal/observable/of';
-import {combineLatest} from 'rxjs/internal/observable/combineLatest';
-import {fromEvent} from 'rxjs/internal/observable/fromEvent';
-import {merge} from 'rxjs/internal/observable/merge';
-import {EMPTY} from 'rxjs/internal/observable/empty';
-import {Subject} from 'rxjs/internal/Subject';
-import {ESCAPE} from '@angular/cdk/keycodes';
-import {TemplatePortal} from '@angular/cdk/portal';
-import {Subscription} from 'rxjs/internal/Subscription';
-import {POSITION_MAP} from "../core/overlay/overlay-position";
+import { FlexibleConnectedPositionStrategy, Overlay, OverlayRef } from '@angular/cdk/overlay';
+import { auditTime, distinctUntilChanged, filter, map, mapTo, takeUntil } from 'rxjs/operators';
+import { BehaviorSubject } from 'rxjs/internal/BehaviorSubject';
+import { fromEvent } from 'rxjs/internal/observable/fromEvent';
+import { merge } from 'rxjs/internal/observable/merge';
+import { Subject } from 'rxjs/internal/Subject';
+import { ESCAPE } from '@angular/cdk/keycodes';
+import { TemplatePortal } from '@angular/cdk/portal';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { DropdownComponent } from './dropdown.component';
+import { POSITION_MAP } from '../core/overlay/overlay-position';
 
 export type PlacementDropdownType = 'topLeft' | 'bottomLeft';
-
 
 @Directive({
   selector: '[appDropdown]',
   providers: [
-    Overlay
-  ]
+    Overlay,
+  ],
 })
 export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
-
   @Input() dropdown: DropdownComponent; // компонент который мы передали
+
   @Input() visible = false; // видим или невидим dropdown
+
   @Input() placement: PlacementDropdownType = 'topLeft'; // позиционирование dropdown
+
   @Input() minWidth = 180; // минимальная ширина dropdown
 
   @Output() visibleChange: EventEmitter<boolean> = new EventEmitter();
 
   private dropdownVisible$ = new BehaviorSubject<boolean>(false);
+
   private overlayClose$ = new Subject<boolean>();
+
   private portal: TemplatePortal;
+
   private destroy$ = new Subject<void>();
+
   private overlayRef: OverlayRef | null = null;
+
   private overlay$: Subscription;
+
   private positionChanges$: Subscription;
 
   private listOfPositions = [
@@ -66,22 +70,22 @@ export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
 
   ngAfterViewInit(): void {
     if (this.dropdown) {
-      const nativeElement: HTMLElement = this.el.nativeElement;
+      const { nativeElement } = this.el;
       const hostClickState$ = fromEvent(nativeElement, 'click').pipe(map(() => !this.visible));
       const domTriggerVisible$ = merge(hostClickState$, this.overlayClose$);
       const visible$ = merge(this.dropdownVisible$, domTriggerVisible$);
 
       visible$.pipe(
-          map((visible) => visible),
-          auditTime(150),
-          distinctUntilChanged(),
-          takeUntil(this.destroy$)
-        )
+        map((visible) => visible),
+        auditTime(150),
+        distinctUntilChanged(),
+        takeUntil(this.destroy$),
+      )
         .subscribe((visible: boolean) => {
           this.visible = visible;
           this.visibleChange.emit(visible);
           if (visible) {
-          const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
+            const positionStrategy: FlexibleConnectedPositionStrategy = this.overlay
               .position()
               .flexibleConnectedTo(this.el.nativeElement)
               .withLockedPosition();
@@ -89,7 +93,7 @@ export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
             // настроить контейнер
             if (!this.overlayRef) {
               this.overlayRef = this.overlay.create({
-                positionStrategy: positionStrategy,
+                positionStrategy,
                 width: this.triggerWidth,
                 minWidth: this.minWidth,
                 disposeOnNavigation: true,
@@ -99,7 +103,7 @@ export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
                 this.overlayRef.backdropClick(),
                 this.overlayRef.detachments(),
                 this.overlayRef.outsidePointerEvents(),
-                this.overlayRef.keydownEvents().pipe(filter(e => e.keyCode === ESCAPE))
+                this.overlayRef.keydownEvents().pipe(filter((e) => e.keyCode === ESCAPE)),
               )
                 .pipe(mapTo(false), takeUntil(this.destroy$))
                 .subscribe(this.overlayClose$);
@@ -118,13 +122,11 @@ export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
               .subscribe((change) => {
                 this.dropdown.dropDownPosition = change.connectionPair.originY;
               });
-          } else {
-            if (this.overlayRef) {
-              this.overlayRef.detach();
-              this.overlayRef = null;
-              this.overlay$.unsubscribe();
-              this.positionChanges$.unsubscribe();
-            }
+          } else if (this.overlayRef) {
+            this.overlayRef.detach();
+            this.overlayRef = null;
+            this.overlay$.unsubscribe();
+            this.positionChanges$.unsubscribe();
           }
         });
     }
@@ -154,5 +156,4 @@ export class DropDownDirective implements AfterViewInit, OnDestroy, OnChanges {
     const triggerWidth = this.el.nativeElement.getBoundingClientRect().width;
     return this.minWidth <= triggerWidth ? triggerWidth : this.minWidth;
   }
-
 }
